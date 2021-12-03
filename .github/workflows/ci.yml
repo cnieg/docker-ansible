@@ -1,5 +1,8 @@
 name: Build Docker
 
+env:
+  ANSIBLE_VERSION: 4.8.0-r0
+
 on:
   push:
   pull_request:
@@ -13,14 +16,19 @@ jobs:
       - name: Check Out Repo 
         uses: actions/checkout@v2
 
-      - name: Build & Push docker image
-        id: build_docker
-        uses: docker/build-push-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: cnieg/ansible
-          push: true
+
+      - name: Build & Push docker image
+        id: build_docker
+        uses: docker/build-push-action@v2
+        with:
+          build-args: |
+            ANSIBLE_VERSION=${{ env.ANSIBLE_VERSION }}
+          push: false
           tag_with_ref: true
           add_git_labels: true
 
@@ -31,21 +39,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v1.0.${{ github.run_number }}
+          tag_name: 1.0.${{ github.run_number }}-ansible-${{ env.ANSIBLE_VERSION }}
           release_name: Release v1.0.${{ github.run_number }}
           body: |
-            Ansible Image v1.0.${{ github.run_number }}
+            Image v1.0.${{ github.run_number }}
+            Ansible Version : ${{ env.ANSIBLE_VERSION }}
           draft: false
           prerelease: false
 
       - name: Push docker image release
         id: push_docker_release
         if: github.ref == 'refs/heads/main'
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: cnieg/ansible
+          build-args: |
+            ANSIBLE_VERSION=${{ env.ANSIBLE_VERSION }}
           push: true
-          tags: v1.0.${{ github.run_number }}
+          tags: cnieg/ansible:1.0.${{ github.run_number }}-ansible-${{ env.ANSIBLE_VERSION }}
           add_git_labels: true
