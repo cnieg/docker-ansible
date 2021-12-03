@@ -24,9 +24,8 @@ jobs:
 
       - name: Build & Push docker image
         id: build_docker
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2
         with:
-          repository: cnieg/ansible
           build-args: |
             ANSIBLE_VERSION=${{ env.ANSIBLE_VERSION }}
           tags: cnieg/ansible:1.0.${{ github.run_number }}-ansible-${{ env.ANSIBLE_VERSION }}
@@ -52,7 +51,7 @@ jobs:
       - name: Push docker image release
         id: push_docker_release
         if: github.ref == 'refs/heads/main'
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2
         with:
           build-args: |
             ANSIBLE_VERSION=${{ env.ANSIBLE_VERSION }}
