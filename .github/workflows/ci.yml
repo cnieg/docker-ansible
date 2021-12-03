@@ -28,7 +28,6 @@ jobs:
         with:
           build-args: |
             ANSIBLE_VERSION=${{ env.ANSIBLE_VERSION }}
-          tags: cnieg/ansible:1.0.${{ github.run_number }}-ansible-${{ env.ANSIBLE_VERSION }}
           push: true
           tag_with_ref: true
           add_git_labels: true
