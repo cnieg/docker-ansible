@@ -28,7 +28,7 @@ jobs:
         with:
           build-args: |
             ANSIBLE_VERSION=${{ env.ANSIBLE_VERSION }}
-          push: true
+          push: false
           tag_with_ref: true
           add_git_labels: true
 
