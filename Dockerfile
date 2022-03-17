@@ -2,6 +2,6 @@ FROM alpine:3.15
 
 ARG ANSIBLE_VERSION
 
-RUN apk update && apk add git ansible=$ANSIBLE_VERSION openssh-client
+RUN apk update && apk add git ansible=$ANSIBLE_VERSION openssh-client py3-pip
 
-RUN apk add py3-dnspython
+RUN pip install dnspython
