@@ -1,7 +1,7 @@
 name: Build Docker
 
 env:
-  ANSIBLE_VERSION: 4.8.0-r0
+  ANSIBLE_VERSION: 5.8.0-r0
 
 on:
   push:
@@ -12,8 +12,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    
-      - name: Check Out Repo 
+
+      - name: Check Out Repo
         uses: actions/checkout@v2
 
       - name: Login to DockerHub
