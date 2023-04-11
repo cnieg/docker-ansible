@@ -1,7 +1,7 @@
 name: Build Docker
 
 env:
-  ANSIBLE_VERSION: 5.8.0-r0
+  ANSIBLE_VERSION: 6.6.0-r0
 
 on:
   push:
@@ -22,15 +22,27 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            name/app
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+
       - name: Build & Push docker image
         id: build_docker
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           build-args: |
             ANSIBLE_VERSION=${{ env.ANSIBLE_VERSION }}
           push: false
-          tag_with_ref: true
-          add_git_labels: true
 
       - name: Create Release
         id: create_release
@@ -50,10 +62,10 @@ jobs:
       - name: Push docker image release
         id: push_docker_release
         if: github.ref == 'refs/heads/main'
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           build-args: |
             ANSIBLE_VERSION=${{ env.ANSIBLE_VERSION }}
           push: true
           tags: cnieg/ansible:1.0.${{ github.run_number }}-ansible-${{ env.ANSIBLE_VERSION }}
-          add_git_labels: true
+          labels: ${{ steps.meta.outputs.labels }}
