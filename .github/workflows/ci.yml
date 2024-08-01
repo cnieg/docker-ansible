@@ -1,7 +1,7 @@
 name: Build Docker
 
 env:
-  ANSIBLE_VERSION: 7.5.0-r0
+  ANSIBLE_VERSION: 9.5.1-r0
 
 on:
   push:
